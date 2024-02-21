@@ -1,0 +1,6 @@
+.cv {
+    height: 1080px;
+    width: 850px;
+    display: flex;
+    border: 1px solid black;
+}
