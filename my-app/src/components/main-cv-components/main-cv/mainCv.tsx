@@ -1,59 +1,97 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './mainCv.css'
+import { getCertifs, getProfExperience, getProfile, getProjects } from "../../../services/InfoService";
 
-function MainCv() {
+interface SideBarProps {
+    name: string; // Specify the type of the name prop
+}
+
+const MainCv: React.FC<SideBarProps> = ({ name }) => {
+    const [profile, setProfile] = useState<string>('');
+    const [profExperience, setProfExperience] = useState<{ title: string, elements: string[] }[]>([]);
+    const [certifs, setCertifs] = useState<{ title: string, elements: string[] }[]>([]);
+    const [projects, setProjects] = useState<{ title: string, description: string }[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const profileData = await getProfile(name);
+                setProfile(profileData);
+
+                const profExperienceData = await getProfExperience(name);
+                setProfExperience(profExperienceData);
+
+                const certifsData = await getCertifs(name);
+                setCertifs(certifsData);
+
+                const projectsData = await getProjects(name);
+                setProjects(projectsData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <div className="main-container">
-            <div className="experience-professionnelle">
-                <h3>EXPÉRIENCE PROFESSIONNELLE</h3>
-                <p>
-                    Project of the Internship : GM-Soft company 2023 <br />
-                    Development of the GeoPark Mgoun Website : <br />
-                    • Front-End of the client pages. <br />
-                    • Front-End of the admin part of the site.
+            <div className="education-history">
+                <h3>PROFILE</h3>
+                <p className="profile-style">
+                    {profile}
                 </p>
+            </div>
+            <div className="experience-professionnelle">
+                <h3>PROFESSIONAL EXPERIENCE</h3>
+                <ul>
+                    {profExperience.map((obj, index) => (
+                        <div key={index}>
+                            <li className="prof-expe-style">
+                                {obj.title}
+                            </li>
+                            <ul>
+                                {obj.elements.map((element, index) => (
+                                    <li key={index} className="prof-expe-detail-style">
+                                        {element}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </ul>
             </div>
             <div className="certifications">
                 <h3>CERTIFICATIONS</h3>
                 <ul>
-                    <li>AWS Cloud Practitioner - Coursera</li>
-                    <li>
-                        DataCamp certifications:
-                        <ul>
-                            <li>Data Analyst Professional 2023 - 2025</li>
-                            <li>Data Analyst Associate 2023 - 2025</li>
-                            <li>Data Scientist Associate 2023 - 2025</li>
-                            <li>Data Engineer Associate</li>
-                        </ul>
-                    </li>
+                    {certifs.map((cert, index) => (
+                        <div key={index}>
+                            <li className="prof-expe-style">
+                                {cert.title}
+                            </li>
+                            <ul>
+                                {cert.elements.map((part, index) => (
+                                    <li key={index}>
+                                        {part}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
                 </ul>
             </div>
-
             <div className="formations-and-projects">
-                <h3>FORMATIONS AND PROJECTS</h3>
-                <p>
-                    <span>Cloud Resume Challenge:</span> <br />
-                    The objective is to present my CV on a web
-                    application hosted on AWS cloud architecture.
-                    <br />
-                    <span>Preparing for the AWS Certified DevOps</span>
-                    Engineer - Professional certification on the
-                    Cloud Guru platform.
-                </p>
-            </div>
-            <div className="education-history">
-                <h3>EDUCATION HISTORY</h3>
-                <ul>
-                    <li>
-                        <p>École Mohammadia d'Ingénieurs : 2023-2025</p>
-                    </li>
-                    <li>
-                        <p>Classes Préparatoires : 2021-2023</p>
-                    </li>
-                    <li>
-                        <p>Baccalauréat science math : 2020-2021</p>
-                    </li>
-                </ul>
+                <h3>PROJECTS</h3>
+                {projects.map((proj, index) => (
+                    <div key={index} className="project-style">
+                        <ul>
+                            <li className="title"> {proj.title} </li>
+                        </ul>
+                        <div className="description">
+                            {proj.description}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
