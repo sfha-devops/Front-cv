@@ -47,7 +47,7 @@ const SideBar: React.FC<SideBarProps> = ({ name }) => {
             <div>
                 <div className="sidebar-header">
                     <div className="image">
-                        <img src="../../../assets/images/Soul.png" alt={"Profile of " + name} />
+                        <img src={"/assets/images/" + name + ".png"} alt={"Profile of " + name} />
                     </div>
                 </div>
 

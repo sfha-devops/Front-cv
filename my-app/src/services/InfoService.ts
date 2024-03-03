@@ -5,8 +5,8 @@ import {Project} from "../Interfaces/Project";
 
 
 // Define a function to fetch data from the backend API
+// const backendUrl = "http://" + process.env.REACT_APP_BACK + ":8080";
 const backendUrl = "http://localhost:8080";
-
 export const getPerson = async (name: string) : Promise<Person> => {
     let abdelmajid: Person = {
         name: "Null",
